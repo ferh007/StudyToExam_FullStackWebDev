@@ -1,0 +1,72 @@
+[
+  {
+    "title": "Spring Coding Bootcamp",
+    "img": "coding_bootcamp.jpg",
+    "location": "Vancouver Campus",
+    "price": 99.99,
+    "rating": 5
+  },
+  {
+    "title": "Tech Networking Night",
+    "img": "networking_night.jpg",
+    "location": "Burnaby Conference Center",
+    "price": 25.0,
+    "rating": 4
+  },
+  {
+    "title": "AI & Ethics Seminar",
+    "img": "ai_ethics.jpg",
+    "location": "Surrey Tech Park",
+    "price": 0,
+    "rating": 5
+  },
+  {
+    "title": "Web Dev Crash Course",
+    "img": "web_dev_course.jpg",
+    "location": "Surrey Tech Park",
+    "price": 49.99,
+    "rating": 4
+  },
+  {
+    "title": "UI/UX Design Workshop",
+    "img": "uiux_workshop.jpg",
+    "location": "Vancouver Innovation Hub",
+    "price": 59.99,
+    "rating": 5
+  },
+  {
+    "title": "Cybersecurity Basics",
+    "img": "cybersecurity.jpg",
+    "location": "Burnaby Learning Centre",
+    "price": 39.0,
+    "rating": 3
+  },
+  {
+    "title": "Python for Beginners",
+    "img": "python_beginners.jpg",
+    "location": "Richmond Library",
+    "price": 20.0,
+    "rating": 4
+  },
+  {
+    "title": "Data Science Meetup",
+    "img": "data_meetup.jpg",
+    "location": "Richmond Tech Lounge",
+    "price": 15.0,
+    "rating": 4
+  },
+  {
+    "title": "Cloud Computing",
+    "img": "cloud_computing.jpg",
+    "location": "Vancouver Campus",
+    "price": 10.0,
+    "rating": 3
+  },
+  {
+    "title": "Game Development Jam",
+    "img": "game_jam.jpg",
+    "location": "Kelowna Game Studio",
+    "price": 30.0,
+    "rating": 5
+  }
+]
