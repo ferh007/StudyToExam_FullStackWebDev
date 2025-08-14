@@ -8,9 +8,7 @@ import UpdateEvent from "./components/updateEvent.jsx";
 
 // === Base URL for raw axios (dev vs prod) ===
 const API_BASE =
-  (import.meta.env.PROD
-    ? "https://studytoexam-fullstackwebdev.onrender.com" // <-- REPLACE with your deployed backend base URL
-    : "http://localhost:3000/api");
+  (import.meta.env.PROD ("https://studytoexam-fullstackwebdev.onrender.com"));
 
 function useQuery() {
   const { search } = useLocation();
