@@ -10,9 +10,9 @@ dotenv.config();
 const app = express();
 
 // ---- Config ----
-const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/finalexamDB";
-const PORT = Number(process.env.PORT) || 3000;
-const CORS_ORIGIN = process.env.CORS_ORIGIN || "*";
+const MONGO_URI = process.env.MONGO_URI;
+const PORT = Number(process.env.PORT);
+const CORS_ORIGIN = process.env.CORS_ORIGIN;
 
 // ---- Middleware ----
 app.use(cors({ origin: CORS_ORIGIN }));

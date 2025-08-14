@@ -1,10 +1,16 @@
 import { useEffect, useState } from "react";
-import { Routes, Route, Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Routes, Route, Link, useLocation } from "react-router-dom";
 import axios from "axios";
 
 import NavBar from "./components/navBar.jsx";
 import SearchBar from "./components/searchBar.jsx";
 import UpdateEvent from "./components/updateEvent.jsx";
+
+// === Base URL for raw axios (dev vs prod) ===
+const API_BASE =
+  (import.meta.env.PROD
+    ? "https://studytoexam-fullstackwebdev.onrender.com" // <-- REPLACE with your deployed backend base URL
+    : "http://localhost:3000/api");
 
 function useQuery() {
   const { search } = useLocation();
@@ -18,7 +24,7 @@ const Home = () => {
   const load = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get("/api/events");
+      const { data } = await axios.get(`${API_BASE}/events`);
       setEvents(data);
     } catch (e) {
       console.error(e);
@@ -67,7 +73,7 @@ const SearchPage = () => {
         return;
       }
       try {
-        const { data } = await axios.get("/api/events", {
+        const { data } = await axios.get(`${API_BASE}/events`, {
           params: { keyword },
         });
         setEvents(data);

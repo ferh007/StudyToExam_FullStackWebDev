@@ -2,6 +2,12 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
+// === Base URL for raw axios (dev vs prod) ===
+const API_BASE =
+  (import.meta.env.PROD
+    ? "https://<YOUR-BACKEND-HOST>/api" // <-- REPLACE with your deployed backend base URL
+    : "http://localhost:3000/api");
+
 const UpdateEvent = ({ onUpdate = (f) => f }) => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -11,7 +17,7 @@ const UpdateEvent = ({ onUpdate = (f) => f }) => {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const res = await axios.get(`/api/events/${id}`);
+        const res = await axios.get(`${API_BASE}/events/${id}`);
         setPrice(res.data.price);
         setRating(res.data.rating);
       } catch (err) {
@@ -24,10 +30,7 @@ const UpdateEvent = ({ onUpdate = (f) => f }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`/api/events/${id}`, {
-        price,
-        rating,
-      });
+      await axios.put(`${API_BASE}/events/${id}`, { price, rating });
       onUpdate();
       navigate("/");
     } catch (err) {
