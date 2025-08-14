@@ -7,7 +7,9 @@ import SearchBar from "./components/searchBar.jsx";
 import UpdateEvent from "./components/updateEvent.jsx";
 
 // === Base URL for raw axios (dev vs prod) ===
-const API_BASE =("https://studytoexam-fullstackwebdev.onrender.com");
+const API_BASE = import.meta.env.PROD
+  ? "https://studytoexam-fullstackwebdev.onrender.com/api" // prod (Render)
+  : "http://localhost:3000/api";                            // dev (local Express)
 
 function useQuery() {
   const { search } = useLocation();

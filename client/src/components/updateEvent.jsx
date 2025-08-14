@@ -3,10 +3,9 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 // === Base URL for raw axios (dev vs prod) ===
-const API_BASE =
-  (import.meta.env.PROD
-    ? "https://<YOUR-BACKEND-HOST>/api" // <-- REPLACE with your deployed backend base URL
-    : "http://localhost:3000/api");
+const API_BASE = import.meta.env.PROD
+  ? "https://studytoexam-fullstackwebdev.onrender.com/api" // prod (Render)
+  : "http://localhost:3000/api";                            // dev (local Express)
 
 const UpdateEvent = ({ onUpdate = (f) => f }) => {
   const { id } = useParams();
