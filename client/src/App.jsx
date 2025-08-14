@@ -18,7 +18,7 @@ const Home = () => {
   const load = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get("http://localhost:3000/api/events");
+      const { data } = await axios.get("/api/events");
       setEvents(data);
     } catch (e) {
       console.error(e);
@@ -67,7 +67,7 @@ const SearchPage = () => {
         return;
       }
       try {
-        const { data } = await axios.get("http://localhost:3000/api/events", {
+        const { data } = await axios.get("/api/events", {
           params: { keyword },
         });
         setEvents(data);

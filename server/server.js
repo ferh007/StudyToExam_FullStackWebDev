@@ -2,92 +2,118 @@
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
+import dotenv from "dotenv";
 import { Event } from "./models/events.js";
 
+dotenv.config();
+
 const app = express();
-app.use(cors());
+
+// ---- Config ----
+const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/finalexamDB";
+const PORT = Number(process.env.PORT) || 3000;
+const CORS_ORIGIN = process.env.CORS_ORIGIN || "*";
+
+// ---- Middleware ----
+app.use(cors({ origin: CORS_ORIGIN }));
 app.use(express.json());
 
-// === MongoDB connection (use local DB name required by exam) ===
-const uri = "mongodb://localhost:27017/finalexamDB";
+// ---- Database ----
 mongoose
-  .connect(uri)
+  .connect(MONGO_URI)
   .then(() => console.log("✅ MongoDB connected"))
-  .catch((err) => console.error("MongoDB error:", err));
+  .catch((err) => console.error("❌ MongoDB connection error:", err));
 
-// === Routes ===
+// ---- Routes ----
 
-// GET all events (optional filter by keyword => matches location OR rating)
+// GET /api/events
+// Optional ?keyword=...  (matches by location text OR rating 1–5)
 app.get("/api/events", async (req, res) => {
   try {
-    const { keyword } = req.query;
-    let filter = {};
-    if (keyword && keyword.trim() !== "") {
-      const maybeNumber = Number(keyword);
-      // If keyword is a number 1–5, match rating OR match location text
-      const ratingMatch =
-        !Number.isNaN(maybeNumber) && maybeNumber >= 1 && maybeNumber <= 5
-          ? { rating: maybeNumber }
-          : null;
+    const { keyword: searchTerm } = req.query;
+    let query = {};
 
-      filter = ratingMatch
-        ? { $or: [{ location: { $regex: keyword, $options: "i" } }, ratingMatch] }
-        : { location: { $regex: keyword, $options: "i" } };
+    if (searchTerm && searchTerm.trim() !== "") {
+      const parsedNumber = Number(searchTerm);
+      const isRating =
+        Number.isFinite(parsedNumber) && parsedNumber >= 1 && parsedNumber <= 5;
+
+      query = isRating
+        ? {
+            $or: [
+              { location: { $regex: searchTerm, $options: "i" } },
+              { rating: parsedNumber },
+            ],
+          }
+        : { location: { $regex: searchTerm, $options: "i" } };
     }
 
-    const events = await Event.find(filter).sort({ title: 1 });
+    const events = await Event.find(query).sort({ title: 1 });
     res.json(events);
-  } catch (e) {
+  } catch (err) {
+    console.error("GET /api/events error:", err);
     res.status(500).json({ error: "Failed to fetch events" });
   }
 });
 
-// GET single event by id (used by UpdateEvent.jsx)
+// GET /api/events/:id
 app.get("/api/events/:id", async (req, res) => {
   try {
-    const event = await Event.findById(req.params.id);
-    if (!event) return res.status(404).json({ error: "Not found" });
+    const { id: eventId } = req.params;
+    const event = await Event.findById(eventId);
+    if (!event) return res.status(404).json({ error: "Event not found" });
     res.json(event);
-  } catch (e) {
-    res.status(400).json({ error: "Invalid id" });
+  } catch (err) {
+    console.error("GET /api/events/:id error:", err);
+    res.status(400).json({ error: "Invalid event id" });
   }
 });
 
-// POST create (if you decide to add “Add Event” later)
+// POST /api/events
 app.post("/api/events", async (req, res) => {
   try {
-    const doc = await Event.create(req.body);
-    res.status(201).json(doc);
-  } catch (e) {
-    res.status(400).json({ error: e.message });
+    const newEventData = req.body;
+    const createdEvent = await Event.create(newEventData);
+    res.status(201).json(createdEvent);
+  } catch (err) {
+    console.error("POST /api/events error:", err);
+    res.status(400).json({ error: err.message });
   }
 });
 
-// PUT update (UpdateEvent.jsx uses this)
+// PUT /api/events/:id
 app.put("/api/events/:id", async (req, res) => {
   try {
-    const doc = await Event.findByIdAndUpdate(req.params.id, req.body, {
+    const { id: eventId } = req.params;
+    const updates = req.body;
+
+    const updatedEvent = await Event.findByIdAndUpdate(eventId, updates, {
       new: true,
       runValidators: true,
     });
-    if (!doc) return res.status(404).json({ error: "Not found" });
-    res.json(doc);
-  } catch (e) {
-    res.status(400).json({ error: e.message });
+
+    if (!updatedEvent) return res.status(404).json({ error: "Event not found" });
+    res.json(updatedEvent);
+  } catch (err) {
+    console.error("PUT /api/events/:id error:", err);
+    res.status(400).json({ error: err.message });
   }
 });
 
-// DELETE (optional)
+// DELETE /api/events/:id
 app.delete("/api/events/:id", async (req, res) => {
   try {
-    const r = await Event.findByIdAndDelete(req.params.id);
-    if (!r) return res.status(404).json({ error: "Not found" });
+    const { id: eventId } = req.params;
+    const deletionResult = await Event.findByIdAndDelete(eventId);
+    if (!deletionResult) return res.status(404).json({ error: "Event not found" });
     res.json({ ok: true });
-  } catch (e) {
-    res.status(400).json({ error: e.message });
+  } catch (err) {
+    console.error("DELETE /api/events/:id error:", err);
+    res.status(400).json({ error: err.message });
   }
 });
 
-// Start on required port 3000
-const PORT = 3000;
-app.listen(PORT, () => console.log(`🚀 Server running: http://localhost:${PORT}`));
+// ---- Start server ----
+app.listen(PORT, () => {
+  console.log(`🚀 Server running at http://localhost:${PORT}`);
+});

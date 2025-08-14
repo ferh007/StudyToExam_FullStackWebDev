@@ -11,7 +11,7 @@ const UpdateEvent = ({ onUpdate = (f) => f }) => {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const res = await axios.get(`http://localhost:3000/api/events/${id}`);
+        const res = await axios.get(`/api/events/${id}`);
         setPrice(res.data.price);
         setRating(res.data.rating);
       } catch (err) {
@@ -24,7 +24,7 @@ const UpdateEvent = ({ onUpdate = (f) => f }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://localhost:3000/api/events/${id}`, {
+      await axios.put(`/api/events/${id}`, {
         price,
         rating,
       });
